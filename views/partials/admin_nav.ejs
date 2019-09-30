@@ -1,0 +1,28 @@
+<div class="nav bg-dark">
+    <% include ./brand %>
+
+    <div class="clock"><span class="clock-lbl"></span></div>
+    <div class="home">
+        <a href="/admin/home"><i class="fas fa-home"></i> home</a>
+    </div>
+
+    <div class="logs">
+        <a href="/admin/logs"><i class="far fa-calendar-check"></i> logs</a>
+    </div>
+
+    <div class="reg-user">
+        <a href="/admin/register"
+            ><i class="fas fa-user-plus"></i> register new user</a
+        >
+    </div>
+
+    <div class="user-info">
+        <p>
+            Logged in as
+            <span class="username">
+                <%= admin.username %> <i class="fas fa-caret-down"></i>
+                <a href="/logout" class="logout bg-dark">logout</a>
+            </span>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,534 @@
+<% include ../partials/admin_top %>
+
+<div class="parent-logs">
+    <% include ../partials/admin_nav %>
+
+    <div class="main-logs bg-dark">
+        <div class="overlay">
+            <div class="loading-screen">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="date-cont">
+            <span class="lbl">filter:</span>
+            <div class="filter-cont">
+                <div class="date-c">
+                    <input type="radio" name="filter" value="date" />
+                    <span>by date</span>
+                </div>
+                <div class="month-c">
+                    <input type="radio" name="filter" value="month" />
+                    <span>by month</span>
+                </div>
+                <div class="year-c">
+                    <input type="radio" name="filter" value="year" />
+                    <span>by year</span>
+                </div>
+            </div>
+
+            <div class="date-selection">
+                <select name="month" class="month">
+                    <% months.forEach((month, index) => { %>
+                    <option value="<%= month %>" <% if (index == date.getMonth()) { %>selected<% } %>>
+                        <%= month %>
+                    </option>
+                    <%})%>
+                </select>
+
+                <input
+                    class="day"
+                    type="number"
+                    name="day"
+                    placeholder="day"
+                    min="1"
+                    max="31"
+                    value="<%= date.getDate() %>"
+                />
+                <input
+                    class="year"
+                    type="number"
+                    name="year"
+                    placeholder="year"
+                    min="2019"
+                    value="<%= date.getFullYear() %>"
+                />
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="income">
+                <a href="/admin/logs/income">income</a>
+            </div>
+            <div class="registration">
+                <a href="/admin/logs/registration">registration</a>
+            </div>
+            <div class="load">
+                <a href="/admin/logs/load">load</a>
+            </div>
+            <div class="reservation">
+                <a href="/admin/logs/reservation">reservation</a>
+            </div>
+            <div class="entrance">
+                <a href="/admin/logs/entrance">entrance</a>
+            </div>
+            <div class="occupant">
+                <a href="/admin/logs/occupant">occupant</a>
+            </div>
+            <div class="departure">
+                <a href="/admin/logs/departure">departure</a>
+            </div>
+            <div class="exit">
+                <a href="/admin/logs/exit">exit</a>
+            </div>
+        </div>
+
+        <h1>select logs to load</h1>
+        <div class="table-cont"></div>
+    </div>
+
+    <div class="income-cont"></div>
+
+    <% include ../partials/footer %>
+</div>
+
+<script>
+    var socket = io.connect('http://192.168.43.162:3000');
+    // var socket = io.connect('https://parkya.herokuapp.com/');
+
+    const tabs = document.querySelector('.tabs');
+    const mainCont = document.querySelector('.main-logs');
+    const tableCont = document.querySelector('.table-cont');
+
+    const monthEl = document.querySelector('.month');
+    const dayEl = document.querySelector('.day');
+    const yearEl = document.querySelector('.year');
+
+    const table = document.createElement('table');
+    const tbody = document.createElement('tbody');
+    
+    
+    const filterDate = document.querySelector('.date-c')
+    filterDate.children[0].checked = true
+    
+    let selectedMonth = monthEl.children[monthEl.selectedIndex].value;
+    let selectedDay = dayEl.value;
+    let selectedYear = yearEl.value;
+    
+    let filter = 'date';
+
+    // event listener for filter by: date, month or year
+    document.querySelector('.filter-cont').addEventListener('change', e => {
+        filter = e.target.value;
+    });
+
+    // event listener for date selection
+    document.querySelector('.date-selection').addEventListener('change', e => {
+        switch (e.target.name) {
+            case 'month':
+                selectedMonth = e.target.value;
+                break;
+            case 'day':
+                selectedDay = e.target.value;
+                break;
+            case 'year':
+                selectedYear = e.target.value;
+                break;
+        }
+    });
+
+    // clock
+    socket.on('clock', clock => {
+        const clockLbl = document.querySelector('.clock-lbl');
+        clockLbl.innerText = clock.time;
+        clockLbl.style.border = '2px solid #FF554E';
+        clockLbl.style.borderRadius = '0.6rem';
+        clockLbl.style.padding = '0 0.8rem';
+    });
+
+    // event listener for tabs
+    tabs.addEventListener('click', e => {
+        // prevent redirection when tab is clicked
+        e.preventDefault();
+
+        // if tab is clicked
+        if (e.target.href) {
+            
+            // make sure filter options are not empty
+            if (filter && selectedDay && selectedMonth && selectedYear !== '') {
+                // send a request for the specific logs
+                $.ajax({
+                    type: 'GET',
+                    url: `${
+                        e.target.href
+                    }/${filter}/${selectedMonth}-${selectedDay}-${selectedYear}`,
+                    beforeSend: () => $('.overlay').show(),
+                    complete: () => $('.overlay').hide(),
+                    success: res => {
+
+                        let incomeCont = document.querySelector('.income-cont');
+                        
+                        // empty content every request
+                        // to avoid duplication
+                        tbody.innerHTML = '';
+                        incomeCont.innerHTML = '';
+
+                        // if no logs are found
+                        // flash error message
+                        if (res.error)
+                            return (document.querySelector('h1').textContent =
+                                res.msg);
+
+                        // set title for the specific logs
+                        document.querySelector('h1').textContent = `${
+                            res.logs[0].logName
+                        } logs`;
+
+                        // if requested log are income logs
+                        // create a total income element
+                        if (res.logs[0].logName === 'income') {
+                            // create h1 element
+                            let tagLine = document.createElement('h1');
+                            // set text content 
+                            tagLine.textContent = `total income: P${
+                                res.totalIncome
+                            }`;
+                            // insert tagline to income container
+                            incomeCont.appendChild(tagLine);
+                        }
+
+                        // check what logs to load
+                        // and insert table headers to table
+                        switch (res.logs[0].logName) {
+                            case 'income':
+                                const incomeTH = createTR(
+                                    [
+                                        'rfid',
+                                        'username',
+                                        'fullname',
+                                        'source',
+                                        'amount',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+                                tbody.appendChild(incomeTH);
+                                break;
+
+                            case 'registration':
+                                const regTH = createTR(
+                                    [
+                                        'rfid',
+                                        'plate #',
+                                        'username',
+                                        'fullname',
+                                        'contact #',
+                                        'initial load',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+
+                                tbody.appendChild(regTH);
+                                break;
+
+                            case 'load':
+                                const loadTH = createTR(
+                                    [
+                                        'rfid',
+                                        'username',
+                                        'fullname',
+                                        'amount',
+                                        'prev. bal',
+                                        'current bal',
+                                        'prev. debt',
+                                        'current debt',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+
+                                tbody.appendChild(loadTH);
+                                break;
+
+                            case 'reservation':
+                                const reservationTH = createTR(
+                                    [
+                                        'rfid',
+                                        'username',
+                                        'fullname',
+                                        'slot',
+                                        'duration',
+                                        'parking fee',
+                                        'prev. bal',
+                                        'current bal',
+                                        'expiry',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+                                tbody.appendChild(reservationTH);
+                                break;
+
+                            case 'entrance':
+                                const entranceTH = createTR(
+                                    [
+                                        'rfid',
+                                        'username',
+                                        'fullname',
+                                        'plate #',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+                                tbody.appendChild(entranceTH);
+                                break;
+
+                            case 'occupant':
+                                const occupantTH = createTR(
+                                    ['slot', 'time', 'date'],
+                                    'th',
+                                );
+                                tbody.appendChild(occupantTH);
+                                break;
+
+                            case 'departure':
+                                const departureTH = createTR(
+                                    ['slot', 'time', 'date'],
+                                    'th',
+                                );
+                                tbody.appendChild(departureTH);
+                                break;
+
+                            case 'exit':
+                                const exitTH = createTR(
+                                    [
+                                        'rfid',
+                                        'username',
+                                        'fullname',
+                                        'plate #',
+                                        'time',
+                                        'date',
+                                    ],
+                                    'th',
+                                );
+                                tbody.appendChild(exitTH);
+                                break;
+                        }
+
+                        // insert table body to table
+                        table.appendChild(tbody);
+                        // insert table to table container
+                        tableCont.appendChild(table);
+
+                        // loop through each logs
+                        // and insert corresponding table data
+                        res.logs.forEach(log => {
+ 
+                            switch (log.logName) {
+                                case 'income':
+                                    const incomeTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.source,
+                                            log.amount,
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(incomeTR);
+                                    break;
+                                case 'load':
+                                    const loadTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.amount,
+                                            log.prevBal,
+                                            log.currBal,
+                                            log.prevDebt,
+                                            log.currDebt,
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(loadTR);
+                                    break;
+
+                                case 'entrance':
+                                    const entranceTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.plateNumber.toUpperCase(),
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+
+                                    tbody.appendChild(entranceTR);
+                                    break;
+
+                                case 'occupant':
+                                    const occupantTR = createTR(
+                                        [
+                                            log.slot.toUpperCase(),
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(occupantTR);
+                                    break;
+
+                                case 'departure':
+                                    const departureTR = createTR(
+                                        [
+                                            log.slot.toUpperCase(),
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(departureTR);
+                                    break;
+
+                                case 'exit':
+                                    const exitTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.plateNumber.toUpperCase(),
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(exitTR);
+                                    break;
+
+                                case 'registration':
+                                    const regTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.plateNumber.toUpperCase(),
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.contact,
+                                            log.initialLoad,
+                                            log.time,
+                                            log.date,
+                                        ],
+                                        'td',
+                                    );
+
+                                    tbody.appendChild(regTR);
+                                    break;
+
+                                case 'reservation':
+                                    const {
+                                        rfid,
+                                        username,
+                                        fullname,
+                                        slot,
+                                        parkingFee,
+                                        prevBal,
+                                        currBal,
+                                        duration,
+                                        expiryTime,
+                                        time,
+                                        date,
+                                    } = log;
+
+                                    // format duration text
+                                    let formattedDuration = '';
+                                    // grab hour
+                                    let hour = Math.floor(duration / 60);
+                                    // grab minutes
+                                    let min = duration % 60;
+                                    // format hour to (e.g. 1 hr, 2 hrs, etc..)
+                                    const formattedHour =
+                                        hour > 1
+                                            ? `${hour} hrs.`
+                                            : `${hour} hr.`;
+
+                                    // if duration has no extra minutes
+                                    if (min === 0) {
+                                        formattedDuration = formattedHour;
+
+                                        // if duration has extra minutes
+                                    } else if (hour > 0) {
+                                        const newHour = formattedHour;
+                                        formattedDuration = `${newHour} & ${min} min`;
+
+                                        // if duration is not equal or less than to 1 hour
+                                    } else {
+                                        formattedDuration = `${min} min.`;
+                                    }
+
+                                    const reservationTR = createTR(
+                                        [
+                                            rfid,
+                                            username,
+                                            fullname.toUpperCase(),
+                                            slot.toUpperCase(),
+                                            formattedDuration,
+                                            `P ${parkingFee}`,
+                                            `P ${prevBal}`,
+                                            `P ${currBal}`,
+                                            expiryTime,
+                                            time,
+                                            date,
+                                        ],
+                                        'td',
+                                    );
+                                    tbody.appendChild(reservationTR);
+                                    break;
+                            }
+                        });
+                    },
+                });
+            } else {
+                document.querySelector('h1').textContent =
+                    'select a filter option first';
+            }
+        }
+    });
+
+    // table row creator
+    // params {data to insert, element type}
+    const createTR = ([...data], element) => {
+        const tr = document.createElement('tr');
+
+        data.forEach(item => {
+            const itemEl = document.createElement(`${element}`);
+
+            itemEl.textContent = item;
+            tr.appendChild(itemEl);
+        });
+
+        return tr;
+    };
+</script>

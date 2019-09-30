@@ -1,0 +1,433 @@
+/********************************************/
+/*                    NAV                   */
+/********************************************/
+.nav {
+    grid-template-columns: 1fr 10% 10% 10% 15% 15%;
+    column-gap: 1%;
+}
+
+.nav a:hover i {
+    color: #ffbd2e;
+}
+
+.home a,
+.logs a,
+.reg-user a,
+.change-rate a {
+    text-decoration: none;
+    font-size: 1.5em;
+    color: #eff2f7;
+}
+
+.clock {
+    color: #eff2f7;
+    font-size: 1.7em;
+    letter-spacing: 2px;
+    text-align: center;
+}
+/*                    NAV                   */
+/********************************************/
+
+/********************************************/
+/*                  SIDEBAR                 */
+/********************************************/
+.side-admin {
+    /* grid-template-rows: repeat(10, 10%); */
+    grid-template-rows: 10% 90%;
+    row-gap: 0;
+    margin-right: 3%;
+    /* border: 1px dashed orange; */
+}
+
+.side-admin > .header h2 {
+    text-align: center;
+    text-transform: uppercase;
+    padding: 1%;
+    font-weight: 100;
+    font-size: 1.8em;
+    margin: 0;
+}
+
+.users-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 1rem;
+    /* border: 1px dashed pink; */
+}
+
+.users-container > .users {
+    display: grid;
+    grid-template-columns: 1fr 10%;
+    text-align: left;
+    padding: 3%;
+    font-size: 1.4em;
+}
+
+.users-container > .users .delete:hover {
+    color: #ffbd2e;
+    cursor: pointer;
+}
+
+.users-container > .users .usernames {
+    color: #eff2f7;
+    text-decoration: none;
+    /* border: 1px dotted white; */
+    padding: 1% 25%;
+}
+.users .usernames:hover > i {
+    color: #ffbd2e;
+}
+/*                  SIDEBAR                 */
+/********************************************/
+
+/********************************************/
+/*                   LOGS                   */
+/********************************************/
+
+.parent-logs {
+    height: 100vh;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.main-logs {
+    width: 100%;
+    height: 120vh;
+    margin-top: 1%;
+}
+
+.main-logs h1 {
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.main-logs .tabs {
+    font-size: 1.2rem;
+    width: 80%;
+    margin: 1% auto;
+    display: flex;
+    padding: 0.8rem;
+    justify-content: center;
+}
+
+.tabs div {
+    padding: 1rem 0.1rem;
+}
+
+.tabs a {
+    padding: 1rem;
+    text-decoration: none;
+    border: 2px solid #eff2f7;
+    color: #eff2f7;
+}
+
+.tabs a:hover {
+    border: 2px solid #ffbd2e;
+}
+
+.tabs a:focus {
+    border: 2px solid #ffbd2e;
+    background: #ffbd2e;
+}
+
+.tabs .income a {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+.tabs .exit a {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+
+.date-cont {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 1%;
+}
+
+.date-cont .lbl {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+.date-cont .filter-cont {
+    text-transform: uppercase;
+    margin-bottom: 1%;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+}
+
+.date-cont .filter-cont div {
+    border: 2px solid #29ca41;
+    padding: 0.5rem;
+}
+
+.date-cont .filter-cont div:hover {
+    cursor: context-menu;
+}
+
+.date-cont .filter-cont .date-c {
+    border-top-left-radius: 0.8rem;
+    border-bottom-left-radius: 0.8rem;
+}
+
+.date-cont .filter-cont .year-c {
+    border-top-right-radius: 0.8rem;
+    border-bottom-right-radius: 0.8rem;
+}
+
+.date-cont .date-selection .month {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+.date-cont .date-selection .year {
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.date-cont input {
+    text-transform: uppercase;
+    background-color: #141d26;
+    color: #fff;
+    border: 2px solid #fff;
+    padding: 0.5rem;
+}
+
+.date-cont select {
+    padding: 0.5rem;
+    text-transform: capitalize;
+    text-align: center;
+    background: #141d26;
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+.table-cont {
+    display: flex;
+    height: 70vh;
+    min-width: 70vw;
+    justify-content: center;
+    overflow-y: auto;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.table-cont::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-cont::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+.table-cont table {
+    border: 1px solid #fff;
+    border-collapse: collapse;
+    font-size: 1.2rem;
+}
+
+.table table tr,
+td,
+th {
+    padding: 0.5rem 1rem;
+    border: 1px solid #fff;
+    text-align: center;
+}
+
+.table-cont table th {
+    position: sticky;
+    top: 0px;
+    letter-spacing: 1px;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    font-weight: 100;
+    background-color: #29ca41;
+    border: 1px solid #fff;
+}
+
+.income-cont {
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.income-cont h1 {
+    text-transform: uppercase;
+    padding: 0.5rem;
+    margin: 0;
+}
+/*                   LOGS                   */
+/********************************************/
+
+/********************************************/
+/*                   USER                   */
+/********************************************/
+.main-load {
+    grid-template-columns: 3fr 2fr 2fr;
+    grid-template-rows: 1fr;
+    column-gap: 4%;
+}
+
+.main div > .heading {
+    font-size: 1.8em;
+    font-weight: 100;
+    /* margin: 0; */
+}
+
+.heading a {
+    position: relative;
+    text-decoration: none;
+    font-size: 0.65em;
+    color: #eff2f7;
+    padding: 0.4rem;
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: -50%;
+    background-color: rgba(0, 0, 0, 0.85);
+    width: 10rem;
+}
+
+.edit:hover .tooltip {
+    display: block;
+}
+
+.delete:hover .tooltip {
+    display: block;
+}
+
+.current-user-info {
+    border: 2px solid #29ca41;
+}
+
+.current-user-info > p {
+    /* border: 1px dashed orange; */
+    padding-left: 2%;
+    color: #fff;
+    letter-spacing: 2px;
+    font-size: 1.4em;
+}
+
+.current-user-info .lbl {
+    text-transform: uppercase;
+    color: #a6b2bf;
+    font-size: 0.8em;
+}
+
+.current-user-info .name-lbl {
+    text-transform: uppercase;
+}
+
+.current-user-info .slot-lbl {
+    text-transform: uppercase;
+}
+.current-user-info .debt {
+    color: #ff554e;
+}
+
+.loading-container {
+    border: 2px solid #00aaff;
+}
+
+.loading-container > .heading {
+    /* border: 1px dashed orange; */
+    margin-bottom: 5%;
+}
+
+.loading-container form {
+    padding: 3%;
+}
+
+.loading-container form > button {
+    margin-top: 5%;
+}
+
+.loading-container .amount-lbl {
+    font-size: 1.5em;
+    padding-left: 1%;
+    text-transform: uppercase;
+    /* border: 1px dashed #fff; */
+}
+
+/* change rates */
+.change-rate-container {
+    border: 2px solid #ff554e;
+}
+
+#change-rate-form {
+    margin-top: 5%;
+}
+
+#change-rate-form input {
+    width: 20%;
+    display: inline-block;
+}
+
+.change-rate-container .change-rate-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;
+}
+
+.change-rate-container .reservation-rate-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;
+}
+
+.change-rate-container .max-duration-lbl {
+    font-size: 1.2em;
+    padding-left: 1%;
+    text-transform: uppercase;
+}
+
+.change-rate-container .max-duration-unit {
+    font-size: 0.7em;
+}
+
+.change-rate-btn {
+    font-size: 0.5em;
+}
+/*                   USER                   */
+/********************************************/
+
+/********************************************/
+/*                   MODAL                  */
+/********************************************/
+.modal-cont-admin {
+    text-align: left;
+    z-index: -1;
+}
+
+.modal-cont-admin .modal-tag {
+    border-bottom: 2px solid #ffbd2e;
+    text-transform: uppercase;
+    font-size: 1.8em;
+    text-align: center;
+    margin: 0;
+}
+
+.prompt > p {
+    margin: 4% 3%;
+    font-size: 1.3em;
+}
+
+.prompt .fullname-container {
+    text-transform: uppercase;
+}
+
+.modal-lbl {
+    color: #a6b2bf;
+    text-transform: lowercase;
+}
+
+#excess-time {
+    color: #ff554e;
+}
+
+/********************************************/
+/*                   MODAL                  */
+/********************************************/
