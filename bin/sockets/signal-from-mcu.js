@@ -6,22 +6,31 @@ const signalFromMCU = (socket, signal) => {
     if (signal.source === 'park') {
         let parkingSlot = signal.slot.toLowerCase();
         // find specific slot
-        Slot.findOne({ slotLetter: parkingSlot }, (err, slot) => {
-            if (err) return console.log('No such slot!');
-            // update SLOT database, change state
-            // check if the slot is reserved
-            if (slot.state === 'reserved') {
-                // change state and indicator
-                slot.indicator = 'red';
-                slot.state = 'occupied';
-                slot.save();
-                // create log
-                createLog({ logName: 'occupant', slot: slot.slotLetter });
-                // send update to all connected devices
-                // socket.emit('signalForMCU', {fromServer: 'Hello NodeMCU'});
-                io.sockets.emit('signalFromServer', { refresh: true });
-            }
-        });
+        Slot.findOne({ slotLetter: parkingSlot })
+            .populate('parokya')
+            .exec((err, slot) => {
+                if (err) return console.log('No such slot!');
+
+                // update SLOT database, change state
+                // check if the slot is reserved
+                if (slot.state === 'reserved') {
+                    // change state and indicator
+                    slot.indicator = 'red';
+                    slot.state = 'occupied';
+                    slot.save();
+                    // create log
+                    createLog({
+                        logName: 'occupant',
+                        slot: slot.slotLetter,
+                        rfid: slot.parokya.rfid,
+                        username: slot.parokya.username,
+                        fullname: `${slot.parokya.fname} ${slot.parokya.mi}. ${slot.parokya.lname}`,
+                        plateNumber: slot.parokya.plateNumber,
+                    });
+                    // send update to all connected devices
+                    io.sockets.emit('signalFromServer', { refresh: true });
+                }
+            });
     } else if (signal.source === 'depart') {
         // update SLOT database, change state
         let departedSlot = signal.slot.toLowerCase();
@@ -38,7 +47,14 @@ const signalFromMCU = (socket, signal) => {
                     slot.parokya.reservation = {};
                     slot.save();
                     slot.parokya.save();
-                    createLog({ logName: 'departure', slot: departedSlot });
+                    createLog({
+                        logName: 'departure',
+                        slot: departedSlot,
+                        rfid: slot.parokya.rfid,
+                        username: slot.parokya.username,
+                        fullname: `${slot.parokya.fname} ${slot.parokya.mi}. ${slot.parokya.lname}`,
+                        plateNumber: slot.parokya.plateNumber,
+                    });
                     // send update to all connected devices
                     io.sockets.emit('signalFromServer', { refresh: true });
                 }
@@ -83,13 +99,18 @@ const signalFromMCU = (socket, signal) => {
     } else if (signal.source === 'exit') {
         User.findOne({ rfid: signal.rfid }, (err, user) => {
             if (err) return console.log(`CANNOT FIND USER: ${err}`);
-            createLog({
-                logName: 'exit',
-                rfid: user.rfid,
-                username: user.username,
-                fullname: `${user.fname} ${user.mi}. ${user.lname}`,
-                plateNumber: user.plateNumber,
-            });
+
+            if (user) {
+                createLog({
+                    logName: 'exit',
+                    rfid: user.rfid,
+                    username: user.username,
+                    fullname: `${user.fname} ${user.mi}. ${user.lname}`,
+                    plateNumber: user.plateNumber,
+                });
+            } else {
+                console.log('no such rfid');
+            }
         });
     }
 };

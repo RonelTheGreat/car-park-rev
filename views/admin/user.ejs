@@ -176,8 +176,7 @@
 </div>
 
 <script>
-    // var socket = io.connect('https://parkya.herokuapp.com/');
-    var socket = io.connect('http://192.168.43.162:3000');
+    var socket = io.connect('https://parkya.herokuapp.com/');
 
     // Prompts and modals
     var modal = document.getElementById('modal');
@@ -219,9 +218,7 @@
     });
 
     deleteLink.addEventListener('click', function() {
-        delTag.innerHTML = `Are you sure you want to delete the account of ${
-            username.textContent
-        }? `;
+        delTag.innerHTML = `Are you sure you want to delete the account of ${username.textContent}? `;
 
         delModal.style.display = 'block';
         delModal.style.zIndex = '1';
@@ -262,9 +259,7 @@
                 if (res.slotRate === 'changed') {
                     modalResponse.style.display = 'block';
                     modalResponse.style.zIndex = '1';
-                    responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${
-                        res.msg
-                    }`;
+                    responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
                     responseModalTag.style.fontSize = '1.5em';
                     modalResponse.style.paddingTop = '15%';
                     document.querySelector('body').style.overflow = 'hidden';
@@ -290,9 +285,7 @@
             success: function(res) {
                 modalResponse.style.display = 'block';
                 modalResponse.style.zIndex = '1';
-                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${
-                    res.msg
-                }`;
+                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
                 responseModalTag.style.fontSize = '1.5em';
                 modalResponse.style.paddingTop = '15%';
                 document.querySelector('body').style.overflow = 'hidden';
@@ -320,9 +313,7 @@
                 }
                 modalResponse.style.display = 'block';
                 modalResponse.style.zIndex = '1';
-                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${
-                    res.msg
-                }`;
+                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.msg}`;
                 responseModalTag.style.fontSize = '1.5em';
                 modalResponse.style.paddingTop = '15%';
                 document.querySelector('body').style.overflow = 'hidden';

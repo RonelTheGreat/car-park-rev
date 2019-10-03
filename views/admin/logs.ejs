@@ -75,6 +75,9 @@
             <div class="load">
                 <a href="/admin/logs/load">load</a>
             </div>
+            <div class="logs-login">
+                <a href="/admin/logs/login">login</a>
+            </div>
             <div class="reservation">
                 <a href="/admin/logs/reservation">reservation</a>
             </div>
@@ -102,8 +105,7 @@
 </div>
 
 <script>
-    var socket = io.connect('http://192.168.43.162:3000');
-    // var socket = io.connect('https://parkya.herokuapp.com/');
+    var socket = io.connect('https://parkya.herokuapp.com/');
 
     const tabs = document.querySelector('.tabs');
     const mainCont = document.querySelector('.main-logs');
@@ -262,6 +264,21 @@
 
                                 tbody.appendChild(loadTH);
                                 break;
+                            
+                            case 'login': 
+                                const loginTH = createTR(
+                                    [
+                                        'rfid', 
+                                        'plate #', 
+                                        'username', 
+                                        'fullname', 
+                                        'time', 
+                                        'date'], 
+                                        'th'
+                                    );
+
+                                tbody.appendChild(loginTH);
+                                break;
 
                             case 'reservation':
                                 const reservationTH = createTR(
@@ -300,7 +317,15 @@
 
                             case 'occupant':
                                 const occupantTH = createTR(
-                                    ['slot', 'time', 'date'],
+                                    [
+                                        'slot',
+                                        'plate #', 
+                                        'rfid', 
+                                        'username', 
+                                        'fullname', 
+                                        'time', 
+                                        'date'
+                                    ],
                                     'th',
                                 );
                                 tbody.appendChild(occupantTH);
@@ -308,7 +333,15 @@
 
                             case 'departure':
                                 const departureTH = createTR(
-                                    ['slot', 'time', 'date'],
+                                    [
+                                        'slot',
+                                        'plate #', 
+                                        'rfid', 
+                                        'username', 
+                                        'fullname', 
+                                        'time', 
+                                        'date'
+                                    ],
                                     'th',
                                 );
                                 tbody.appendChild(departureTH);
@@ -394,6 +427,10 @@
                                     const occupantTR = createTR(
                                         [
                                             log.slot.toUpperCase(),
+                                            log.plateNumber.toUpperCase(),
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
                                             log.time,
                                             log.date,
                                         ],
@@ -406,6 +443,10 @@
                                     const departureTR = createTR(
                                         [
                                             log.slot.toUpperCase(),
+                                            log.plateNumber.toUpperCase(),
+                                            log.rfid,
+                                            log.username,
+                                            log.fullname.toUpperCase(),
                                             log.time,
                                             log.date,
                                         ],
@@ -427,6 +468,21 @@
                                         'td',
                                     );
                                     tbody.appendChild(exitTR);
+                                    break;
+
+                                case 'login':
+                                    const loginTR = createTR(
+                                        [
+                                            log.rfid,
+                                            log.plateNumber.toUpperCase(),
+                                            log.username,
+                                            log.fullname.toUpperCase(),
+                                            log.time,
+                                            log.date,
+                                        ], 'td'
+                                    );
+
+                                    tbody.appendChild(loginTR);
                                     break;
 
                                 case 'registration':

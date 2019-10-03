@@ -1,4 +1,5 @@
-const express = require('express'),
+const createLog = require('../../bin/create-log'),
+    express = require('express'),
     router = express.Router(),
     bcrypt = require('bcrypt'),
     User = require('../../models/User');
@@ -76,6 +77,16 @@ router.post('/', (req, res) => {
                                 id: user._id,
                                 reservation: user.reservation,
                             };
+
+                            // add to logs
+                            createLog({
+                                logName: 'login',
+                                rfid: user.rfid,
+                                username: user.username,
+                                plateNumber: user.plateNumber,
+                                fullname: `${user.fname} ${user.mi}. ${user.lname}`,
+                            });
+
                             res.redirect('/user/home');
                         }
 

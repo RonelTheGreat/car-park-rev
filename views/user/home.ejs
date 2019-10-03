@@ -40,7 +40,7 @@
                 </p>
                 <p class="user-modal-tag">
                     P <%= slots[0].slotRate.reservationRate %> will be deducted
-                    from your account
+                    from your account for <%= slots[0].slotRate.maxDuration %> min. duration
                 </p>
                 <button id="confirm" onclick="confirm();">
                     <i class="far fa-check-circle"></i> confirm
@@ -203,9 +203,8 @@
 </div>
 
 <script>
-    // var socket = io.connect('https://parkya.herokuapp.com/');
-    var socket = io.connect('http://192.168.43.162:3000');
-
+    var socket = io.connect('https://parkya.herokuapp.com/');
+    
     var modal = document.getElementById('modal');
     var responseModalTag = document.querySelector('.response-modal-tag');
     var remainingTimeBtn = document.querySelector('.remaining-time-btn');
@@ -371,9 +370,7 @@
 
                 modalResponse.style.display = 'block';
                 modalResponse.style.zIndex = '1';
-                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${
-                    res.response
-                }`;
+                responseModalTag.innerHTML = `<i class="far fa-bell"></i> ${res.response}`;
                 responseModalTag.style.fontSize = '1.5em';
                 modalResponse.style.paddingTop = '8%';
                 document.querySelector('body').style.overflow = 'hidden';
