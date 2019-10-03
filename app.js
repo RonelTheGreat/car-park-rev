@@ -2,8 +2,6 @@
 const updateTime = require('./bin/update-time'),
     bodyParser = require('body-parser'),
     validator = require('express-validator'),
-    createAdmin = require('./bin/create-admin'),
-    createSlots = require('./bin/create-slots'),
     mongoose = require('mongoose'),
     session = require('express-session'),
     socket = require('./bin/socket'),
@@ -42,7 +40,7 @@ app.use(
 
 // MONGODB CONNECTION
 const DB_URL =
-    'mongodb+srv://admin123:admin1234@cluster0-brxlt.mongodb.net/admin?retryWrites=true&w=majority';
+    'mongodb+srv://admin:admin@cluster0-brxlt.mongodb.net/admin?retryWrites=true&w=majority';
 
 // connect to database
 mongoose.connect(DB_URL);
