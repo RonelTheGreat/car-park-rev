@@ -42,7 +42,7 @@ app.use(
 
 // MONGODB CONNECTION
 const DB_URL =
-    'mongodb+srv://admin123:admin123@cluster0-brxlt.mongodb.net/admin?retryWrites=true&w=majority';
+    'mongodb+srv://admin123:admin1234@cluster0-brxlt.mongodb.net/admin?retryWrites=true&w=majority';
 
 // connect to database
 mongoose.connect(DB_URL);
