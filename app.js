@@ -12,7 +12,7 @@ const updateTime = require('./bin/update-time'),
     app = express();
 (http = require('http').Server(app)), (io = require('socket.io')(http));
 
-reset();
+// reset();
 
 // update slot timer every 5 sec
 let timer1 = setTimeout(function update() {
